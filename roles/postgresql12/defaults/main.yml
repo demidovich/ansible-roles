@@ -1,0 +1,4 @@
+---
+postgresql12_repo_url: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
+postgresql12_pghba_path: "/var/lib/pgsql/12/data/pg_hba.conf"
+postgresql12_setup_path: "/usr/pgsql-12/bin/postgresql-12-setup"

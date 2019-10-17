@@ -1,0 +1,4 @@
+---
+php56_fpm_user: "nginx"
+php56_fpm_group: "nginx"
+php56_fpm_listen: "127.0.0.1:9056"

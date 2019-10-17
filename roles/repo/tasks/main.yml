@@ -1,0 +1,55 @@
+---
+- name: Install yum-utils package
+  yum:
+    name: yum-utils
+    state: present
+  tags: repo
+
+# EPEL
+
+- name: Check if EPEL repo is already configured.
+  stat:
+    path: "{{ epel_repofile_path }}"
+  register: epel_repofile_result
+  tags: repo
+
+- name: Install EPEL repo.
+  yum:
+    name: "{{ epel_repo_url }}"
+    state: present
+  register: result
+  until: result is succeeded
+  retries: 5
+  delay: 10
+  when: not epel_repofile_result.stat.exists
+  tags: repo
+
+- name: Import EPEL GPG key.
+  rpm_key:
+    key: "{{ epel_repo_gpg_key_url }}"
+    state: present
+  when: not epel_repofile_result.stat.exists
+  ignore_errors: "{{ ansible_check_mode }}"
+  tags: repo
+
+# REMI
+
+- name: Check if Remi repo is already configured.
+  stat:
+    path: "{{ remi_repofile_path }}"
+  register: remi_repofile_result
+  tags: repo
+
+- name: Install remi repo.
+  yum:
+    name: "{{ remi_repo_url }}"
+    state: present
+  when: not remi_repofile_result.stat.exists
+  tags: repo
+
+- name: Import remi GPG key.
+  rpm_key:
+    key: "{{ remi_repo_gpg_key }}"
+    state: present
+  when: not remi_repofile_result.stat.exists
+  tags: repo

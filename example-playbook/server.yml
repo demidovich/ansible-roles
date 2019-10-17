@@ -1,0 +1,23 @@
+---
+- hosts: web
+  become: yes
+
+  roles:
+    - role: '/home/lnxcfg/roles/iptables'
+    - role: '/home/lnxcfg/roles/repo'
+    - role: '/home/lnxcfg/roles/nginx'
+    - role: '/home/lnxcfg/roles/php-fpm73'
+    - role: '/home/lnxcfg/roles/php-fpm56'
+    - role: '/home/lnxcfg/roles/composer'
+    - role: '/home/lnxcfg/roles/postgresql12'
+
+  tasks:
+  - name: Install tools
+    yum:
+      name:
+        - net-tools
+        - git
+        - zip
+        - unzip
+        - wget
+      state: present

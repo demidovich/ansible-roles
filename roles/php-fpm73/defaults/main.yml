@@ -1,0 +1,4 @@
+---
+php73_fpm_user: "nginx"
+php73_fpm_group: "nginx"
+php73_fpm_listen: "127.0.0.1:9073"

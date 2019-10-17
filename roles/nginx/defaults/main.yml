@@ -1,0 +1,5 @@
+---
+nginx_user: "nginx"
+nginx_worker_connections: 1024
+nginx_sendfile: "on"
+

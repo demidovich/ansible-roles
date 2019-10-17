@@ -1,0 +1,81 @@
+---
+- name: Postgresql 12 install yum-utils
+  yum:
+    name: yum-utils
+    state: present
+  tags: postgresql
+
+- name: Postgresql 12 install repo
+  yum:
+    name: "{{ postgresql12_repo_url }}"
+    state: present
+  tags: postgresql
+
+- name: Postgresql 12 install packages
+  yum:
+    name:
+      - postgresql12
+      - postgresql12-server
+    state: present
+  tags: postgresql
+
+- name: Postgresql 12 check if database initialized
+  stat:
+    path: "{{ postgresql12_pghba_path }}"
+  register: postgresql_pghba
+  tags: postgresql
+
+- name: Postgresql 12 initdb
+  shell: "{{ postgresql12_setup_path}} initdb"
+  ignore_errors: yes
+  when: not postgresql_pghba.stat.exists
+
+- name: Postgresql 12 enable service
+  service:
+    name: postgresql-12
+    state: started
+    enabled: yes
+
+- name: Postgresql 12 install python package
+  yum:
+    name:
+      - python
+      - python-pip
+      - python-psycopg2
+    state: present
+  become: yes
+
+- name: Postgresql 12 pg_hba.conf local
+  postgresql_pg_hba:
+    dest: "{{ postgresql12_pghba_path }}"
+    contype: local
+    users: all
+    databases: all
+    method: peer
+    state: present
+  notify: reload postgresql12
+
+- name: Postgresql 12 pg_hba.conf host
+  postgresql_pg_hba:
+    dest: "{{ postgresql12_pghba_path }}"
+    contype: host
+    users: all
+    databases: all
+    address: 127.0.0.1/32
+    method: md5
+    state: present
+  notify: reload postgresql12
+
+- name: Postgresql 12 add default user
+  postgresql_user:
+    name: "web"
+    password: "web"
+    role_attr_flags: SUPERUSER,CREATEDB
+    state: present
+  become: yes
+  become_user: postgres
+
+
+
+
+
