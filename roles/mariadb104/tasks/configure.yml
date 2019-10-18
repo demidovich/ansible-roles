@@ -1,0 +1,10 @@
+# roles/mariadb104/tasks/configure.yml
+---
+
+- name: MariaDB 10.4 server config file
+  template:
+    src: server.cnf.j2
+    dest: "/etc/my.cnf.d/server.cnf"
+  notify: restart mariadb
+  tags: mariadb
+

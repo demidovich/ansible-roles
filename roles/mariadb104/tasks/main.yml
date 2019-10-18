@@ -1,0 +1,7 @@
+# roles/mariadb104/tasks/main.yml
+---
+
+- include_tasks: install.yml
+- include_tasks: configure.yml
+- include_tasks: root_password.yml
+- include_tasks: users.yml

@@ -1,0 +1,16 @@
+---
+
+mariadb_repo_url: "http://yum.mariadb.org/10.3/centos7-amd64"
+mariadb_repo_gpgkey_url: "https://yum.mariadb.org/RPM-GPG-KEY-MariaDB"
+
+mariadb_bind_address: "127.0.0.1"
+mariadb_port: "3306"
+mariadb_enable_slow_log: 1
+mariadb_slow_log_time: 5
+mariadb_root_password: "root"
+mariadb_socket: "/var/lib/mysql/mysql.sock"
+
+mariadb_users:
+  - name: web
+    password: web
+    priv: '*.*:ALL,GRANT'

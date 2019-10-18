@@ -1,0 +1,20 @@
+# roles/mariadb104/tasks/install.yml
+---
+
+- name: MariaDB 10.4 add repository
+  yum_repository:
+    name: MariaDB
+    description: Official MariaDB repository
+    baseurl: "{{ mariadb_repo_url }}"
+    gpgkey: "{{ mariadb_repo_gpgkey_url }}"
+    gpgcheck: true
+  tags: mariadb
+
+- name: Install packages
+  yum:
+    name:
+      - MariaDB-common
+      - MariaDB-server
+      - MySQL-python
+    state: present
+  tags: mariadb
