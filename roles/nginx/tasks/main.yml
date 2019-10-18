@@ -1,70 +1,47 @@
 ---
-- name: Check if Nginx Exists
+- name: Nginx check if nginx Exists
   shell: "if systemctl list-unit-files | grep -q nginx; then echo 1; else echo 0; fi;"
   register: nginx_exists
+  tags: nginx
 
-#- name: Create a www-data group
-#  group:
-#    name: www-data
-#    gid: 82
-#    state: present
-#    system: yes
-
-#- name: Create a www-data user
-#  user:
-#    name: www-data
-#    uid: 82
-#    group: www-data
-#    state: present
-#    system: yes
-#    createhome: no
-#    home: /var/www
-
-#- name: Install epel
-#  yum:
-#    name: epel-release
-#    state: present
-#
-
-- name: Install nginx
+- name: Nginx install
   yum:
     name: nginx
     state: present
+  tags: nginx
 
-- name: Create nginx hosts directory
+- name: Nginx create host configs directory
   file:
-    path: /etc/nginx/hosts
+    name: /etc/nginx/hosts
     state: directory
     owner: root
     group: root
     mode:  0755
+  tags: nginx
 
-#- name: Add www-data permission for /var/lib/nginx/
-#  file:
-#    path: /var/lib/nginx
-#    recurse: yes
-#    owner: www-data
-#    group: www-data
+- name: Nginx create enabled host configs directory
+  file:
+    name: /etc/nginx/hosts.enabled
+    state: directory
+    owner: root
+    group: root
+    mode:  0755
+  tags: nginx
 
-#- name: Add www-data permission for /var/log/nginx/
-#  file:
-#    path: /var/log/nginx
-#    recurse: yes
-#    owner: www-data
-#    group: www-data
-
-- name: Install semanage
+- name: Nginx install semanage
   yum:
     name: libsemanage-python
     state: present
+  tags: nginx
 
-- name: Set "httpd_can_network_connect" and "httpd_can_network_connect_db" flag on
+- name: Nginx set "httpd_can_network_connect" and "httpd_can_network_connect_db" flag on
   seboolean: name={{ item }} state=yes persistent=yes
   with_items:
     - httpd_can_network_connect
     - httpd_can_network_connect_db
+  tags: nginx
 
-- name: Create main nginx config
+- name: Nginx nginx.conf
   template:
     src: nginx.conf.j2
     dest: /etc/nginx/nginx.conf
@@ -73,8 +50,20 @@
     mode:  0644
     backup: yes
   notify: reload nginx
+  tags: nginx
 
-- name: Create nginx default host config
+- name: Nginx ssl.conf
+  template:
+    src: ssl.conf.j2
+    dest: /etc/nginx/ssl.conf
+    owner: root
+    group: root
+    mode:  0644
+    backup: yes
+  notify: reload nginx
+  tags: nginx
+
+- name: Nginx default host config
   template:
     src: default-host.conf.j2
     dest: /etc/nginx/hosts/default-host.conf
@@ -82,10 +71,19 @@
     group: root
     mode:  0644
   notify: reload nginx
+  tags: nginx
 
-- name: Enable nginx autoload
+- name: Nginx enable default host config
+  file:
+    src: /etc/nginx/hosts/default-host.conf
+    dest: /etc/nginx/hosts.enabled/default-host.conf
+    state: link
+  notify: reload nginx
+  tags: nginx
+
+- name: Nginx enable autoload
   service:
     name: nginx
     state: started
     enabled: yes
-
+  tags: nginx

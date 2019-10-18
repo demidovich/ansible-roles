@@ -1,0 +1,12 @@
+# roles/nginx_host/tasks/certbot.yml
+---
+
+- name: Create letsencrypt certificate
+  command: >
+    certbot certonly --non-interactive --agree-tos --agree-tos
+    --server "{{ certbot_acme_host }}"
+    -m "{{ nginx_host_certbot_email }}"
+    -d {{ item.name }}
+  args:
+    creates: "/etc/letsencrypt/live/{{ item.name }}/fullchain.pem"
+  with_items: "{{ nginx_hosts }}"

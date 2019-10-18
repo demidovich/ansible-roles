@@ -3,5 +3,5 @@
 
 - include_tasks: install.yml
 - include_tasks: configure.yml
-- include_tasks: root_password.yml
+- include_tasks: root-password.yml
 - include_tasks: users.yml
