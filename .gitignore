@@ -1,0 +1,7 @@
+nbproject/
+.idea/
+*.autosave
+.DS_Store
+.settings/
+.classpath
+.project
