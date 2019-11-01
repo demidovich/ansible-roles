@@ -1,0 +1,11 @@
+# Здесь можно положить кастомные правила для основного хоста.
+# Различные кастомные location или настройки nginx.
+# Файлы servers.conf и settings.conf не пересохраняются Ansible.
+#
+# Параметры хоста на момент генерации (могут измениться):
+#
+# Host     : {{ _server_name }}
+# Type     : {{ _type }}
+# Public   : /var/www/{{ _server_name }}{{ _public }}
+# Fpm port : {{ _php_fpm_port }}
+

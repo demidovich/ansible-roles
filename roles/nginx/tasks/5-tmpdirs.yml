@@ -1,0 +1,10 @@
+# roles/nginx/tasks/5-tmpdirs.yml
+---
+
+- name: Chown /var/lib/nginx
+  file:
+    name: /var/lib/nginx
+    recurse: yes
+    owner: "{{ nginx_user }}"
+    group: root
+  tags: nginx

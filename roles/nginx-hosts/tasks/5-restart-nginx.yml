@@ -1,0 +1,9 @@
+# roles/nginx-hosts/tasks/restart-nginx.yml
+---
+
+- name: "Restart nginx"
+  service:
+    name: nginx
+    state: restarted
+  tags: nginx_hosts
+

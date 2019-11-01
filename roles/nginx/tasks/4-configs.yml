@@ -1,0 +1,42 @@
+# roles/nginx/tasks/4-configs.yml
+---
+
+- name: Create /etc/nginx/hosts
+  file:
+    name: /etc/nginx/hosts
+    state: directory
+    owner: root
+    group: root
+    mode:  0755
+  tags: nginx
+
+- name: Create /etc/nginx/hosts.enabled
+  file:
+    name: /etc/nginx/hosts.enabled
+    state: directory
+    owner: root
+    group: root
+    mode:  0755
+  tags: nginx
+
+- name: Update /etc/nginx/nginx.conf
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode:  0644
+    backup: yes
+  notify: restart nginx
+  tags: nginx
+
+- name: Update /etc/nginx/ssl.conf
+  template:
+    src: ssl.conf.j2
+    dest: /etc/nginx/ssl.conf
+    owner: root
+    group: root
+    mode:  0644
+    backup: yes
+  notify: restart nginx
+  tags: nginx

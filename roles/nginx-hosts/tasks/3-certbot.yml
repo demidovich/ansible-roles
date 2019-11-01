@@ -1,0 +1,27 @@
+# roles/nginx_host/tasks/certbot.yml
+---
+
+- name: "Checking ssl certs"
+  stat:
+    path: "/etc/letsencrypt/live/{{ item.server_name }}/fullchain.pem"
+  register: ssl_st
+  with_items: "{{ nginx_hosts }}"
+
+- name: "Create letsencrypt certificate"
+  become: yes
+  shell: "certbot certonly -n --nginx -m {{ nginx_hosts_certbot_email }} -d {{ _server_name }}"
+  args:
+    creates: "/etc/letsencrypt/live/{{ _server_name }}/fullchain.pem"
+#  debug:
+#    msg: "################## {{ _server_name }}"
+  vars:
+    _server_name: "{{ item.item.server_name }}"
+  when: not item.stat.exists
+  with_items: "{{ ssl_st.results }}"
+  tags: nginx_hosts
+
+- name: "Add letsencrypt cronjob for cert renewal"
+  cron:
+    name: letsencrypt_renewal
+    special_time: weekly
+    job: "certbot renew --nginx && service nginx reload"

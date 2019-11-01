@@ -1,4 +1,4 @@
-# roles/mariadb104/tasks/install.yml
+# roles/mariadb104/tasks/1-install.yml
 ---
 
 - name: MariaDB 10.4 add repository
@@ -18,3 +18,9 @@
       - MySQL-python
     state: present
   tags: mariadb
+
+- name: Start mariadb
+  service:
+    name: mariadb
+    state: started
+    enabled: yes

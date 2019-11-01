@@ -1,4 +1,4 @@
-# roles/mariadb104/tasks/configure.yml
+# roles/mariadb104/tasks/2-configure.yml
 ---
 
 - name: MariaDB 10.4 server config file

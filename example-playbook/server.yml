@@ -1,20 +1,23 @@
 ---
-- hosts: web
+- hosts: dev
   become: yes
 
   roles:
-    - role: '/home/lnxcfg/roles/iptables'
-    - role: '/home/lnxcfg/roles/repo'
-    - role: '/home/lnxcfg/roles/nginx'
-    - role: '/home/lnxcfg/roles/php-fpm73'
-    - role: '/home/lnxcfg/roles/php-fpm56'
-    - role: '/home/lnxcfg/roles/composer'
-    - role: '/home/lnxcfg/roles/postgresql12'
+    - role: '../roles/iptables'
+    - role: '../roles/repo'
+    - role: '../roles/nginx'
+    - role: '../roles/php-fpm73'
+    - role: '../roles/php-fpm56'
+    - role: '../roles/composer'
+    - role: '../roles/postgresql12'
+    - role: '../roles/user-web'
+    - role: '../roles/mariadb104'
 
   tasks:
   - name: Install tools
     yum:
       name:
+        - mc
         - net-tools
         - git
         - zip

@@ -1,0 +1,23 @@
+# roles/postgresql12/tasks/2-configs.yml
+---
+
+- name: Postgresql 12 pg_hba.conf local
+  postgresql_pg_hba:
+    dest: "{{ postgresql12_pghba_path }}"
+    contype: local
+    users: all
+    databases: all
+    method: peer
+    state: present
+  notify: reload postgresql12
+
+- name: Postgresql 12 pg_hba.conf host
+  postgresql_pg_hba:
+    dest: "{{ postgresql12_pghba_path }}"
+    contype: host
+    users: all
+    databases: all
+    address: 127.0.0.1/32
+    method: md5
+    state: present
+  notify: reload postgresql12

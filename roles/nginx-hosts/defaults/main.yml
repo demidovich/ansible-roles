@@ -1,3 +1,8 @@
+# roles/nginx-hosts/defaults/main.yml
 ---
-nginx_host_certbot_email: info@rutorika.ru
+
+nginx_hosts_certbot_www: "/var/www/certbot"
+nginx_hosts_certbot_email: "admin@rutorika.ru"
 nginx_hosts: []
+nginx_hosts_certbot_server: "https://acme-v02.api.letsencrypt.org/directory"
+

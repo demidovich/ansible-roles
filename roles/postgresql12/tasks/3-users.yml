@@ -1,0 +1,11 @@
+# roles/postgresql12/tasks/3-users.yml
+---
+
+- name: Add default user
+  postgresql_user:
+    name: "{{ postgresql12_default_user }}"
+    password: "{{ postgresql12_default_password }}"
+    role_attr_flags: SUPERUSER,CREATEDB
+    state: present
+  become: yes
+  become_user: postgres

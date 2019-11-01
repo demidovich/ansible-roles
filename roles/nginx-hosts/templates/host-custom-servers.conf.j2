@@ -1,0 +1,18 @@
+# Здесь можно положить конфиги дополнительных хостов.
+# Файлы servers.conf и settings.conf не пересохраняются Ansible.
+# Параметры хоста на момент генерации (могут измениться):
+#
+# Host     : {{ _server_name }}
+# Type     : {{ _type }}
+# Public   : /var/www/{{ _server_name }}{{ _public }}
+# Fpm port : {{ _php_fpm_port }}
+#
+# Пример:
+#
+#server {
+#    listen 80;
+#    listen [::]:80;
+#
+#    server_name domain1;
+#    return 301 $scheme://domain2$request_uri;
+#}

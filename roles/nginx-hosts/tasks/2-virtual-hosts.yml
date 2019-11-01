@@ -1,0 +1,128 @@
+# roles/nginx-hosts/tasks/virtual-hosts.yml
+---
+
+# Virtual host config dir
+
+- name: "Creating virtual host config dirs"
+  file:
+    path: "/etc/nginx/hosts/{{ item.server_name }}"
+    recurse: yes
+    state: directory
+    owner: root
+    group: root
+  with_items: "{{ nginx_hosts }}"
+  tags: nginx_vhosts
+
+# Virtual host main config
+
+- name: "Creating virtual host host.conf"
+  template:
+    src: "{{ _type }}.conf.j2"
+    dest: "/etc/nginx/hosts/{{ _server_name }}/host.conf"
+    mode: 0644
+    group: root
+    owner: root
+#  debug:
+#    msg: "################## {{ _server_name }}"
+  vars:
+    _server_name: "{{ item.server_name }}"
+    _type: "{{ item.type }}"
+    _php_fpm_port: "{{ item.php_fpm_port }}"
+    _public: "{{ item.public }}"
+  with_items: "{{ nginx_hosts }}"
+  tags: nginx_vhosts
+
+# Virtual host custom-servers config
+
+- name: "Checking virtual host servers.conf"
+  stat:
+    path: "/etc/nginx/hosts/{{ item.server_name }}/servers.conf"
+  register: st
+  with_items: "{{ nginx_hosts }}"
+  tags: nginx_vhosts
+
+- name: "Creating virtual host servers.conf"
+  template:
+    src: "host-custom-servers.conf.j2"
+    dest: "/etc/nginx/hosts/{{ _server_name }}/servers.conf"
+    mode: 0644
+    group: root
+    owner: root
+#  debug:
+#    msg: "################## {{ _server_name }}"
+  vars:
+    _server_name: "{{ item.item.server_name }}"
+    _type: "{{ item.item.type }}"
+    _php_fpm_port: "{{ item.item.php_fpm_port }}"
+    _public: "{{ item.item.public }}"
+  when: not item.stat.exists
+  with_items: "{{ st.results }}"
+  tags: nginx_vhosts
+
+# Virtual host custom-settings config
+
+- name: "Checking virtual host custom-settings config"
+  stat:
+    path: "/etc/nginx/hosts/{{ item.server_name }}/settings.conf"
+  register: st
+  with_items: "{{ nginx_hosts }}"
+  tags: nginx_vhosts
+
+- name: "Creating virtual host settings.conf"
+  template:
+    src: "host-custom-settings.conf.j2"
+    dest: "/etc/nginx/hosts/{{ _server_name }}/settings.conf"
+    mode: 0644
+    group: root
+    owner: root
+#  debug:
+#    msg: "################## {{ _server_name }}"
+  vars:
+    _server_name: "{{ item.item.server_name }}"
+    _type: "{{ item.item.type }}"
+    _php_fpm_port: "{{ item.item.php_fpm_port }}"
+    _public: "{{ item.item.public }}"
+  when: not item.stat.exists
+  with_items: "{{ st.results }}"
+  tags: nginx_vhosts
+
+# Virtual host www public
+
+- name: "Creating virtual host public dir"
+  file:
+    path: "/var/www/{{ item.server_name }}{{ item.public }}"
+    recurse: yes
+    state: directory
+    owner: nginx
+    group: nginx
+    setype: httpd_sys_content_t
+  with_items: "{{ nginx_hosts }}"
+  tags: nginx_vhosts
+
+- name: "Checking virtual host index.php"
+  stat:
+    path: "/var/www/{{ item.server_name }}{{ item.public }}/index.php"
+  register: st
+  with_items: "{{ nginx_hosts }}"
+  tags: nginx_vhosts
+
+- name: "Creating virtual host index.php"
+  template:
+    src: "php/index.php.j2"
+    dest: "/var/www/{{ _row.server_name }}{{ _row.public }}/index.php"
+    owner: nginx
+    group: nginx
+    mode:  0644
+  vars:
+    _row: "{{ item.item }}"
+  when: not item.stat.exists
+  with_items: "{{ st.results }}"
+  tags: nginx_vhosts
+
+
+
+
+
+
+
+

@@ -1,0 +1,38 @@
+# roles/postgresql12/tasks/1-install.yml
+---
+
+- name: Install packages
+  yum:
+    name:
+      - yum-utils
+      - python
+      - python-pip
+      - python-psycopg2
+      - "{{ postgresql12_repo_url }}"
+    state: present
+  tags: postgresql
+
+- name: Install postgresql 12
+  yum:
+    name:
+      - postgresql12
+      - postgresql12-server
+    state: present
+  tags: postgresql
+
+- name: Postgresql 12 check if database initialized
+  stat:
+    path: "{{ postgresql12_pghba_path }}"
+  register: postgresql_pghba
+  tags: postgresql
+
+- name: Postgresql 12 initdb
+  shell: "{{ postgresql12_setup_path}} initdb"
+  ignore_errors: yes
+  when: not postgresql_pghba.stat.exists
+
+- name: Postgresql 12 enable service
+  service:
+    name: postgresql-12
+    state: started
+    enabled: yes

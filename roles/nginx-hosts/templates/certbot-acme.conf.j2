@@ -1,0 +1,22 @@
+# Default host configuration
+#
+# {{ ansible_managed }}
+
+server {
+
+    listen 80;
+    listen [::]:80;
+    server_name {{ nginx_hosts_joined }};
+    root {{ nginx_hosts_certbot_www }};
+
+    error_log /var/log/nginx/default-host.error.log warn;
+
+    location ~ ^/.well-known {
+        auth_basic off;
+        default_type "text/html";
+    }
+
+    location ~ {
+        return 301 https://$server_name$request_uri;
+    }
+}

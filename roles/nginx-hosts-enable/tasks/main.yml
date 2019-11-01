@@ -4,12 +4,9 @@
 # Порядок важен!
 # Сначала добавляем новый server_name в 80 хост certbot
 # Дальше создаем его конфигурацию и пустую веб-директорию с индексным файлом
-# Пробуем сгенерировать сертификат
-# После этого включаем хосты для которых сертификат сгенерирован
-# Nginx рестартуем не по handler
+# После этого генерируем сертификат
 
 - include_tasks: 1-certbot-acme-host.yml
 - include_tasks: 2-virtual-hosts.yml
-- include_tasks: 3-certbot.yml
-- include_tasks: 4-enable-hosts.yml
-- include_tasks: 5-restart-nginx.yml
+- include_tasks: 3-generate-cert.yml
+

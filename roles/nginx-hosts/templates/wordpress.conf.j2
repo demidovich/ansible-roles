@@ -1,0 +1,120 @@
+# Laravel host configuration
+#
+# {{ ansible_managed }}
+
+include hosts/{{ _server_name }}/servers[.]conf;
+
+server {
+
+    listen      443 ssl;
+    server_name {{ _server_name }};
+    index       index.php;
+    root        /var/www/{{ _server_name }}{{ _public }}';
+    access_log  /var/log/nginx/{{ _server_name }}-access.log combined;
+    error_log   /var/log/nginx/{{ _server_name }}-error.log warn;
+    error_page 404 /index.html;
+    charset utf-8;
+
+    include hosts/{{ _server_name }}/settings[.]conf;
+
+    # SSL
+
+    ssl on;
+    ssl_certificate /etc/letsencrypt/live/{{ _server_name }}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{ _server_name }}/privkey.pem;
+    ssl_trusted_certificate /etc/letsencrypt/live/{{ _server_name }}/chain.pem;
+    include /etc/nginx/ssl.conf;
+
+    # lestencrypt
+
+    location ~ /.well-known {
+        auth_basic off;
+        default_type "text/html";
+        root {{ nginx_hosts_certbot_www }};
+    }
+
+    # SKIP CACHE
+
+    add_header Strict-Transport-Security 'max-age=31536000; includeSubDomains; preload';
+    set $skip_cache 0;
+
+    if ($request_method = POST) {
+        set $skip_cache 1;
+    }
+
+    if ($query_string != "") {
+        set $skip_cache 1;
+    }
+
+    if ($request_uri ~* /wp-admin|/xmlrpc.php|/download.php|wp-.*.php|/feed/|index.php|sitemap(_index)?.xml) {
+        set $skip_cache 1;
+    }
+
+    if ($http_cookie ~* "comment_author|wordpress_[a-f0-9]+|wp-postpass|wordpress_no_cache|wordpress_logged_in") {
+        set $skip_cache 1;
+    }
+
+    location / {
+        try_files $uri $uri/ /index.php?$args;
+    }
+
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_pass 127.0.0.1:{{ _php_fpm_port }};
+        fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+        fastcgi_index index.php;
+        fastcgi_cache sitecache;
+        fastcgi_cache_valid 200 301 302 304 5m;
+        fastcgi_cache_key "$request_method|$http_if_modified_since|$http_if_none_match|$host|$request_uri";
+        fastcgi_cache_bypass $skip_cache;
+        fastcgi_no_cache $skip_cache;
+    }
+
+    #location ~ /purge(/.*) {
+    #    allow 127.0.0.1;
+    #    deny all;
+    #    fastcgi_cache_purge sitecache "$request_method|$http_if_modified_since|$http_if_none_match|$host|$request_uri";
+    #}
+
+    location ~* ^.+\.(ogg|ogv|svg|svgz|eot|otf|woff|mp4|ttf|rss|atom|jpg|jpeg|gif|png|ico|zip|tgz|gz|rar|bz2|doc|xls|exe|ppt|tar|mid|midi|wav|bmp|rtf)$ {
+        access_log off;
+        log_not_found off;
+        expires max;
+    }
+
+    location = /favicon.ico {
+        log_not_found off;
+        access_log off;
+    }
+
+    location = /robots.txt {
+        allow all;
+        log_not_found off;
+        access_log off;
+    }
+
+    # DENY ACCESS
+
+    location ~ /\. {
+        deny  all;
+        access_log off;
+        log_not_found off;
+    }
+
+    location ~* /(?:uploads|files)/.*.php$ {
+        deny all;
+        access_log off;
+        log_not_found off;
+    }
+
+    location ~* ^/wp-content/uploads/.*.(html|htm|shtml|php|js|swf)$ {
+        deny all;
+        access_log off;
+        log_not_found off;
+    }
+
+    location ~* wp-config.php {
+        deny all;
+    }
+}

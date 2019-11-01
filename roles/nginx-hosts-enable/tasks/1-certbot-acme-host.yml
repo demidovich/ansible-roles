@@ -1,0 +1,24 @@
+# roles/nginx-hosts/tasks/certbot-acme-host.yml
+---
+
+- name: "Update certbot acme http host"
+  template:
+    src: certbot-acme.conf.j2
+    dest: "/etc/nginx/hosts/certbot-acme.conf"
+    owner: root
+    group: root
+    mode: 0644
+  vars:
+    nginx_hosts_joined: "{{ nginx_hosts | join(' ', attribute='server_name') }}"
+  notify: restart nginx
+  tags: nginx_hosts
+
+- name: "Enable certbot acme http host"
+  file:
+    src: /etc/nginx/hosts/certbot-acme.conf
+    dest: /etc/nginx/hosts.enabled/certbot-acme.conf
+    state: link
+  notify: restart nginx
+  tags: nginx_hosts
+
+

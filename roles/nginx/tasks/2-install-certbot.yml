@@ -1,0 +1,10 @@
+# roles/nginx/tasks/2-install-certbot.yml
+---
+
+- name: Nginx install certbot package
+  yum:
+    name:
+      - certbot
+      - python2-certbot-nginx
+    state: present
+  tags: nginx

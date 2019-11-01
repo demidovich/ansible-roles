@@ -1,0 +1,15 @@
+# roles/nginx/tasks/3-selinux.yml
+---
+
+- name: Nginx install semanage
+  yum:
+    name: libsemanage-python
+    state: present
+  tags: nginx
+
+- name: Nginx set "httpd_can_network_connect" and "httpd_can_network_connect_db" flag on
+  seboolean: name={{ item }} state=yes persistent=yes
+  with_items:
+    - httpd_can_network_connect
+    - httpd_can_network_connect_db
+  tags: nginx

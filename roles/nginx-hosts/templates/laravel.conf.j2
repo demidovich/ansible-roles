@@ -1,0 +1,100 @@
+# Laravel host configuration
+#
+# {{ ansible_managed }}
+
+include hosts/{{ _server_name }}/servers[.]conf;
+
+server {
+
+    listen        443 ssl;
+    server_name   {{ _server_name }};
+    root         '/var/www/{{ _server_name }}{{ _public }}';
+    access_log    /var/log/nginx/{{ _server_name }}-access.log combined;
+    error_log     /var/log/nginx/{{ _server_name }}-error.log warn;
+    charset       utf-8;
+
+    include hosts/{{ _server_name }}/settings[.]conf;
+
+    client_max_body_size 10m;
+
+    # SSL
+
+    ssl on;
+    ssl_certificate /etc/letsencrypt/live/{{ _server_name }}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{ _server_name }}/privkey.pem;
+    ssl_trusted_certificate /etc/letsencrypt/live/{{ _server_name }}/chain.pem;
+    include /etc/nginx/ssl.conf;
+
+    # lestencrypt
+
+    location ~ /.well-known {
+        auth_basic off;
+        default_type "text/html";
+        root {{ nginx_hosts_certbot_www }};
+    }
+
+    # Количество подключений с одного IP
+    # Количество запросов в секунду
+    # limit_conn conn_limit_per_ip 10;
+    # limit_req zone=req_limit_per_ip burst=10 nodelay;
+
+    gzip             on;
+    gzip_min_length  1100;
+    gzip_types       image/svg+xml text/plain text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript application/javascript;
+
+    # add_header X-Frame-Options "DENY";
+    # add_header X-Content-Type-Options nosniff;
+    # add_header Content-Security-Policy "default-src 'self';";
+
+    # Финальный слэш
+    rewrite ^/(.*)/+$ /$1 last;
+
+    # Приведение URL к нижнему регистру
+    # Нужен lua
+    # if ($uri != $uri_lowercase) {
+    #     rewrite . $scheme://$host$uri_lowercase;
+    # }
+
+    # Переадресация на страницу без index.php
+    if ($request_uri ~* "^(.*/)index\.php$") {
+        return 301 $1;
+    }
+
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location = /robots.txt  { access_log off; log_not_found off; }
+
+    # Статика
+
+    # Если запрос статики, отдаем его
+    # Если файла нет, вернется 404
+
+    #
+    # develop
+    #
+    location ~* \.(js|ico|gif|mp4|jpg|png|json|css|txt|map|htm|html|xml|pdf|woff|woff2|ttf|svg|eot|rtf|doc|docx)$ {
+        try_files $uri =404;
+        add_header Cache-Control "no-store, no-cache, must-revalidate, post-check=0, pre-check=0";
+        add_header Pragma "no-cache";
+        expires -1;
+        add_header Last-Modified $sent_http_Expires;
+        access_log off;
+        log_not_found off;
+    }
+
+    #
+    # production
+    #
+    # location ~* \.(js|ico|gif|mp4|jpg|png|json|css|txt|map|htm|html|xml|pdf|woff|woff2|ttf|svg|eot|rtf|doc|docx)$ {
+    #    expires max;
+    #    access_log off;
+    # }
+
+    location ~ {
+        include        fastcgi_params;
+        fastcgi_pass   127.0.0.1:{{ _php_fpm_port }};
+        fastcgi_index  index.php;
+        fastcgi_param  SCRIPT_FILENAME $document_root/index.php;
+        fastcgi_hide_header X-Powered-By;
+    }
+}

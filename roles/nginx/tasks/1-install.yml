@@ -1,0 +1,16 @@
+# roles/nginx/tasks/1-install.yml
+---
+
+- name: Nginx install
+  yum:
+    name: nginx
+    state: present
+  tags: nginx
+
+- name: Nginx enable autoload
+  service:
+    name: nginx
+    state: started
+    enabled: yes
+  tags: nginx
+  become: yes

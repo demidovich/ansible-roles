@@ -1,4 +1,46 @@
 ---
+
+# PHP-Fpm settings
+
 php73_fpm_user: "nginx"
 php73_fpm_group: "nginx"
 php73_fpm_listen: "127.0.0.1:9073"
+php73_fpm_listen_allowed_clients: "127.0.0.1"
+php73_fpm_pm_max_children: 50
+php73_fpm_pm_start_servers: 5
+php73_fpm_pm_min_spare_servers: 5
+php73_fpm_pm_max_spare_servers: 5
+php73_fpm_slowlog: "/var/opt/remi/php73/log/php-fpm/www-slow.log"
+php73_fpm_request_slowlog_timeout: 0
+
+# Common
+
+php73_short_open_tag: "off"
+php73_mbstring_func_overload: 0
+php73_mbstring_internal_encoding: "utf-8"
+php73_file_uploads: "on"
+php73_upload_max_filesize: "2M"
+php73_max_file_uploads: 20
+php73_post_max_size: "8M"
+
+# Resources limit settings
+
+php73_max_execution_time: 30
+php73_max_input_time: 60
+php73_max_input_vars: "1000"
+php73_memory_limit: "128M"
+
+# Error handling
+
+php73_display_errors: "off"
+php73_log_errors: "on"
+php73_html_errors: "on"
+
+# OpCache settings
+
+php73_opcache_enable: "1"
+# The OPcache shared memory storage size.
+php73_opcache_memory_consumption: "128"
+# The amount of memory for interned strings in Mbytes.
+php73_opcache_interned_strings_buffer: "8"
+php73_opcache_max_accelerated_files: "4000"

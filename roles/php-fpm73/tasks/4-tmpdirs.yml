@@ -1,0 +1,11 @@
+# roles/php-fpm73/tasks/4-tmpdirs.yml
+---
+
+- name: Create /var/opt/remi/php73/lib/php/session
+  file:
+    name: /var/opt/remi/php73/lib/php/session
+    state: directory
+    recurse: yes
+    owner: "{{ php73_fpm_user }}"
+    group: "{{ php73_fpm_group }}"
+  tags: nginx

@@ -1,8 +1,8 @@
-# roles/nginx-hosts/handlers/main.yml
+# roles/nginx-hosts-enable/handlers/main.yml
 ---
 
 - name: restart nginx
   service:
     name: 'nginx'
     state: restarted
-  tags: nginx_hosts
+  tags: nginx_enable_hosts

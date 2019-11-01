@@ -1,5 +1,6 @@
 ---
+
 nginx_user: "nginx"
 nginx_worker_connections: 1024
-nginx_sendfile: "on"
-
+nginx_certbot_www_path: "/var/www/certbot"
+nginx_client_max_body_size: "8M"

@@ -1,0 +1,21 @@
+# roles/php-fpm73/tasks/2-selinux.yml
+---
+
+- name: Install policycoreutils
+  yum:
+    name:
+      - policycoreutils
+      - policycoreutils-devel
+    state: present
+
+- name: Enable semanage php-fpm port
+  seport:
+    ports: 9073
+    proto: tcp
+    setype: http_port_t
+    state: present
+  tags: php73
+
+
+
+

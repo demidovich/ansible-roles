@@ -1,0 +1,21 @@
+# roles/nginx-hosts/tasks/enable-hosts.yml
+---
+
+- name: "Checking generated ssl certs"
+  stat:
+    path: "/etc/letsencrypt/live/{{ item.server_name }}/fullchain.pem"
+  register: st_generated_ssl
+  with_items: "{{ nginx_hosts }}"
+  tags: nginx_hosts
+
+- name: "Enable ssl hosts"
+  file:
+    src: "/etc/nginx/hosts/{{ _server_name }}/host.conf"
+    dest: "/etc/nginx/hosts.enabled/{{ _server_name }}.conf"
+    state: link
+  vars:
+    _server_name: "{{ item.item.server_name }}"
+  when: item.islnk is not defined
+  with_items: "{{ st_generated_ssl.results }}"
+  tags: nginx_hosts
+

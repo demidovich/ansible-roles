@@ -62,7 +62,7 @@ listen = {{ php73_fpm_listen }}
 ; must be separated by a comma. If this value is left blank, connections will be
 ; accepted from any ip address.
 ; Default Value: any
-listen.allowed_clients = 127.0.0.1
+listen.allowed_clients = {{ php73_fpm_listen_allowed_clients }}
 
 ; Specify the nice(2) priority to apply to the pool processes (only if set)
 ; The value can vary from -19 (highest priority) to 20 (lower priority)
@@ -113,22 +113,26 @@ pm = dynamic
 ; forget to tweak pm.* to fit your needs.
 ; Note: Used when pm is set to 'static', 'dynamic' or 'ondemand'
 ; Note: This value is mandatory.
-pm.max_children = 50
+;;default 50
+pm.max_children = {{ php73_fpm_pm_max_children }}
 
 ; The number of child processes created on startup.
 ; Note: Used only when pm is set to 'dynamic'
 ; Default Value: min_spare_servers + (max_spare_servers - min_spare_servers) / 2
-pm.start_servers = 5
+;;default 5
+pm.start_servers = {{ php73_fpm_pm_start_servers }}
 
 ; The desired minimum number of idle server processes.
 ; Note: Used only when pm is set to 'dynamic'
 ; Note: Mandatory when pm is set to 'dynamic'
-pm.min_spare_servers = 5
+;;default 5
+pm.min_spare_servers = {{ php73_fpm_pm_min_spare_servers }}
 
 ; The desired maximum number of idle server processes.
 ; Note: Used only when pm is set to 'dynamic'
 ; Note: Mandatory when pm is set to 'dynamic'
-pm.max_spare_servers = 35
+;;default 35
+pm.max_spare_servers = {{ php73_fpm_pm_max_spare_servers }}
 
 ; The number of seconds after which an idle process will be killed.
 ; Note: Used only when pm is set to 'ondemand'
@@ -264,13 +268,15 @@ pm.max_spare_servers = 35
 ; The log file for slow requests
 ; Default Value: not set
 ; Note: slowlog is mandatory if request_slowlog_timeout is set
-slowlog = /var/opt/remi/php73/log/php-fpm/www-slow.log
+;;default /var/opt/remi/php73/log/php-fpm/www-slow.log
+slowlog = {{ php73_fpm_slowlog }}
 
 ; The timeout for serving a single request after which a PHP backtrace will be
 ; dumped to the 'slowlog' file. A value of '0s' means 'off'.
 ; Available units: s(econds)(default), m(inutes), h(ours), or d(ays)
 ; Default Value: 0
-;request_slowlog_timeout = 0
+;; default 0
+request_slowlog_timeout = {{ php73_fpm_request_slowlog_timeout }}
 
 ; Depth of slow log stack trace.
 ; Default Value: 20
