@@ -1,0 +1,16 @@
+# roles/docker/tasks/1-configure.yml
+---
+
+- name: Enable Docker service
+  service:
+    name: docker
+    state: started
+    enabled: yes
+  become: yes
+
+- name: Add user lnxcfg to docker group
+  user:
+    name: lnxcfg
+    groups: docker
+    append: yes
+  become: yes

@@ -1,0 +1,22 @@
+# roles/docker/tasks/1-install.yml
+---
+
+- name: Packages for docker install
+  yum:
+    name:
+      - yum-utils
+      - device-mapper-persistent-data
+      - lvm2
+    state: present
+
+- name: Add Docker repo
+  get_url:
+    url: https://download.docker.com/linux/centos/docker-ce.repo
+    dest: /etc/yum.repos.d/docker-ce.repo
+  become: yes
+
+- name: Install Docker
+  package:
+    name: docker-ce
+    state: present
+  become: yes

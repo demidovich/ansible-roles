@@ -14,13 +14,18 @@
     - role: '../roles/mariadb104'
 
   tasks:
-  - name: Install tools
+  - name: Install common packages
     yum:
       name:
-        - mc
         - net-tools
         - git
         - zip
         - unzip
         - wget
+        - mc
       state: present
+
+  vars:
+    iptables_open_ports:
+      - 80
+      - 443

@@ -1,0 +1,6 @@
+# roles/iptables/defaults/main.yml
+---
+
+iptables_open_ports: []
+
+

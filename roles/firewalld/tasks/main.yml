@@ -1,0 +1,31 @@
+# roles/firewalld/tasks/main.yml
+---
+
+- name: Check if Iptables exists
+  shell: "if systemctl list-unit-files | grep -q iptables; then echo 1; else echo 0; fi;"
+  register: iptables_exists
+
+- name: Stop iptables
+  service:
+    name: iptables
+    state: stopped
+    enabled: no
+  when: "iptables_exists == 1"
+
+- name: Remove Iptables
+  yum:
+    name: iptables-services
+    state: absent
+    update_cache: yes
+
+- name: Install Firewalld
+  yum:
+    name: firewalld
+    state: present
+    update_cache: yes
+
+- name: Enable Firewalld
+  service:
+    name: firewalld
+    state: started
+    enabled: yes
