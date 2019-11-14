@@ -1,0 +1,43 @@
+# roles/stat/tasks/1-prometheus-configs.yml
+---
+
+- name: "Creating /opt/stat/etc/prometheus/node.enabled"
+  file:
+    recurse: yes
+    path: /opt/stat/etc/prometheus/node.enabled
+    state: directory
+  tags: stat
+
+- name: Creating /opt/stat/etc/prometheus/node.available
+  file:
+    recurse: yes
+    path: /opt/stat/etc/prometheus/node.available
+    state: directory
+  tags: stat
+
+- name: Creating /opt/stat/etc/prometheus/prometheus.yml
+  copy:
+    src: "{{ role_path }}/files/prometheus/prometheus.yml"
+    dest: /opt/stat/etc/prometheus/prometheus.yml
+    mode: 0644
+  tags: stat
+
+- name: Creating /opt/stat/etc/prometheus/node.available/localhost.json
+  copy:
+    src: "{{ role_path }}/files/prometheus/node.available/localhost.json"
+    dest: /opt/stat/etc/prometheus/node.available/localhost.json
+    mode: 0644
+  tags: stat
+
+- name: Creating /opt/stat/etc/prometheus/node.available/localhost.json
+  file:
+    src: /opt/stat/etc/prometheus/node.available/localhost.json
+    dest: /opt/stat/etc/prometheus/node.enabled/localhost.json
+    state: link
+  tags: stat
+
+
+
+
+
+

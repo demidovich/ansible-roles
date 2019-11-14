@@ -1,0 +1,11 @@
+# roles/selinux/tasks/2-policy.yml
+---
+
+- name: Enable http policy
+  seport:
+    ports: "{{ item | string }}"
+    proto: tcp
+    setype: http_port_t
+    state: present
+  with_items: "{{ selinux_http_ports }}"
+  tags: selinux

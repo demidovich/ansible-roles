@@ -7,6 +7,8 @@
       - yum-utils
       - device-mapper-persistent-data
       - lvm2
+      - python
+      - python-pip
     state: present
 
 - name: Add Docker repo
@@ -17,6 +19,38 @@
 
 - name: Install Docker
   package:
-    name: docker-ce
+    name:
+      - docker-ce
+      - docker-compose
     state: present
   become: yes
+
+- name: Add pip docker package
+  pip:
+    name: docker-py
+    state: present
+  become: yes
+
+- name: Check ctop package
+  stat:
+    path: /usr/local/bin/ctop
+  register: st
+
+- name: Add ctop package
+  get_url:
+    url: https://github.com/bcicen/ctop/releases/download/v0.7.2/ctop-0.7.2-linux-amd64
+    dest: /usr/local/bin/ctop
+    mode: 0755
+  when: not st.stat.exists
+
+- name: Add ctop symlink
+  file:
+    src: /usr/local/bin/ctop
+    dest: /usr/bin/ctop
+    state: link
+  when: not st.stat.exists
+
+
+
+
+

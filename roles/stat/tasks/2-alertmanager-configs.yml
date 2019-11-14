@@ -1,0 +1,22 @@
+# roles/stat/tasks/2-alertmanager-configs.yml
+---
+
+- name: Creating /opt/stat/etc/alertmanager dir
+  file:
+    recurse: yes
+    path: /opt/stat/etc/alertmanager
+    state: directory
+  tags: stat
+
+#- name: Check existing /opt/stat/etc/alertmanager/config.yml
+#  stat:
+#    path: /opt/stat/etc/alertmanager/config.yml
+#  register: st
+
+- name: Create alertmanager config
+  template:
+    src: alertmanager/config.yml.j2
+    dest: /opt/stat/etc/alertmanager/config.yml
+    mode:  0644
+#  when: not st.stat.exists
+  tags: stat

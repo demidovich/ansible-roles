@@ -1,0 +1,48 @@
+# roles/stat/tasks/3-grafana-configs.yml
+---
+
+# datasources
+
+- name: Creating /opt/stat/etc/grafana/provisioning/datasources dir
+  file:
+    path: /opt/stat/etc/grafana/provisioning/datasources
+    recurse: yes
+    state: directory
+  tags: stat
+
+- name: Check existing /opt/stat/etc/grafana/provisioning/datasources/datasource.yml
+  stat:
+    path: /opt/stat/etc/grafana/provisioning/datasources/datasource.yml
+  register: st
+
+- name: Creating /opt/stat/etc/grafana/provisioning/datasources/datasource.yml
+  copy:
+    src: "{{ role_path }}/files/grafana/provisioning/datasources/datasource.yml"
+    dest: /opt/stat/etc/grafana/provisioning/datasources/datasource.yml
+    mode: 0644
+  when: not st.stat.exists
+  tags: stat
+
+# dashboards
+
+- name: Check existing /opt/stat/etc/grafana/provisioning/dashboards
+  stat:
+    path: /opt/stat/etc/grafana/provisioning/dashboards
+  register: st
+
+- name: Creating /opt/stat/etc/grafana/provisioning/dashboards dir
+  file:
+    path: /opt/stat/etc/grafana/provisioning/dashboards
+    recurse: yes
+    state: directory
+  tags: stat
+
+- name: Copy example dashboards
+  copy:
+    src: "{{ role_path }}/files/grafana/provisioning/dashboards/"
+    dest: /opt/stat/etc/grafana/provisioning/dashboards/
+    directory_mode: yes
+  when: not st.stat.exists
+  tags: stat
+
+

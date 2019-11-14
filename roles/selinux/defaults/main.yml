@@ -1,0 +1,6 @@
+# roles/selinux/defaults/main.yml
+---
+
+selinux_http_ports: []
+
+

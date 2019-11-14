@@ -1,0 +1,13 @@
+
+route:
+  group_wait: 20s       #  Частота
+  group_interval: 20s   #  уведомлений 
+  repeat_interval: {{ stat_alertmanager_repeat_interval }}  # в телеграм
+  group_by: ['alertname', 'cluster', 'service']
+  receiver: alertmanager-bot
+
+receivers:
+- name: alertmanager-bot
+  webhook_configs:
+  - send_resolved: true
+    url: 'http://{{ stat_alertmanager_telegram_bot_ip }}:{{ stat_alertmanager_telegram_bot_port }}'

@@ -1,0 +1,10 @@
+# roles/stat/tasks/main.yml
+---
+
+- include_tasks: 1-prometheus-configs.yml
+- include_tasks: 2-alertmanager-configs.yml
+- include_tasks: 3-grafana-configs.yml
+- include_tasks: 4-users.yml
+- include_tasks: 5-docker-prometheus.yml
+- include_tasks: 6-docker-node-exporter.yml
+- include_tasks: 7-docker-grafana.yml

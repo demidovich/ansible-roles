@@ -1,7 +1,7 @@
 # roles/iptables/tasks/3-extra-rules.yml
 ---
 
-- name: "Open port"
+- name: Open port
   iptables:
     chain: INPUT
     destination_port: "{{ item | string }}"

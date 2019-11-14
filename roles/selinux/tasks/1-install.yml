@@ -1,0 +1,10 @@
+# roles/selinux/tasks/1-install.yml
+---
+
+- name: Install policycoreutils
+  yum:
+    name:
+      - policycoreutils
+      - policycoreutils-devel
+    state: present
+  tags: selinux
