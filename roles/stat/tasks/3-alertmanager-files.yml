@@ -1,4 +1,4 @@
-# roles/stat/tasks/2-alertmanager-configs.yml
+# roles/stat/tasks/3-alertmanager-files.yml
 ---
 
 - name: Creating /opt/stat/etc/alertmanager dir

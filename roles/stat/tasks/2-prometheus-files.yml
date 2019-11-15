@@ -1,10 +1,14 @@
-# roles/stat/tasks/1-prometheus-configs.yml
+# roles/stat/tasks/2-prometheus-files.yml
 ---
+
+# Configs
 
 - name: "Creating /opt/stat/etc/prometheus/node.enabled"
   file:
     recurse: yes
     path: /opt/stat/etc/prometheus/node.enabled
+    owner: nobody
+    group: nogroup
     state: directory
   tags: stat
 
@@ -12,6 +16,8 @@
   file:
     recurse: yes
     path: /opt/stat/etc/prometheus/node.available
+    owner: nobody
+    group: nogroup
     state: directory
   tags: stat
 
@@ -19,6 +25,8 @@
   copy:
     src: "{{ role_path }}/files/prometheus/prometheus.yml"
     dest: /opt/stat/etc/prometheus/prometheus.yml
+    owner: nobody
+    group: nogroup
     mode: 0644
   tags: stat
 
@@ -26,6 +34,8 @@
   copy:
     src: "{{ role_path }}/files/prometheus/node.available/localhost.json"
     dest: /opt/stat/etc/prometheus/node.available/localhost.json
+    owner: nobody
+    group: nogroup
     mode: 0644
   tags: stat
 
@@ -36,8 +46,14 @@
     state: link
   tags: stat
 
+# Data
 
-
-
-
+- name: Creating prometheus data dir
+  file:
+    recurse: yes
+    path: /opt/stat/var/prometheus/data
+    owner: nobody
+    group: nogroup
+    state: directory
+  tags: stat
 

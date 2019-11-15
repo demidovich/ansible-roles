@@ -1,0 +1,23 @@
+# Grafana host configuration
+#
+# {{ ansible_managed }}
+
+include hosts/{{ _server_name }}/servers[.]conf;
+
+server {
+
+    listen      80;
+    server_name {{ _server_name }};
+    index       index.php;
+    root        /var/www/{{ _server_name }}{{ _public }}';
+    access_log  /var/log/nginx/{{ _server_name }}-access.log combined;
+    error_log   /var/log/nginx/{{ _server_name }}-error.log warn;
+    error_page 404 /index.html;
+    charset utf-8;
+
+    include hosts/{{ _server_name }}/settings[.]conf;
+
+    location / {
+        proxy_pass http://localhost:3000/;
+    }
+}

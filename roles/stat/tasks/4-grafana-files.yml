@@ -1,4 +1,4 @@
-# roles/stat/tasks/3-grafana-configs.yml
+# roles/stat/tasks/4-grafana-files.yml
 ---
 
 # datasources
@@ -7,6 +7,8 @@
   file:
     path: /opt/stat/etc/grafana/provisioning/datasources
     recurse: yes
+    owner: grafana
+    group: grafana
     state: directory
   tags: stat
 
@@ -19,6 +21,8 @@
   copy:
     src: "{{ role_path }}/files/grafana/provisioning/datasources/datasource.yml"
     dest: /opt/stat/etc/grafana/provisioning/datasources/datasource.yml
+    owner: grafana
+    group: grafana
     mode: 0644
   when: not st.stat.exists
   tags: stat
@@ -34,6 +38,8 @@
   file:
     path: /opt/stat/etc/grafana/provisioning/dashboards
     recurse: yes
+    owner: grafana
+    group: grafana
     state: directory
   tags: stat
 
@@ -41,8 +47,43 @@
   copy:
     src: "{{ role_path }}/files/grafana/provisioning/dashboards/"
     dest: /opt/stat/etc/grafana/provisioning/dashboards/
+    owner: grafana
+    group: grafana
     directory_mode: yes
   when: not st.stat.exists
   tags: stat
+
+# data
+
+- name: Check existing /opt/stat/var/grafana
+  stat:
+    path: /opt/stat/var/grafana
+  register: st
+
+- name: Creating /opt/stat/var/grafana dir
+  file:
+    path: /opt/stat/var/grafana
+    recurse: yes
+    owner: grafana
+    group: grafana
+    state: directory
+  tags: stat
+
+# logs
+
+- name: Check existing /opt/stat/log/grafana
+  stat:
+    path: /opt/stat/log/grafana
+  register: st
+
+- name: Creating /opt/stat/log/grafana dir
+  file:
+    path: /opt/stat/log/grafana
+    recurse: yes
+    owner: grafana
+    group: grafana
+    state: directory
+  tags: stat
+
 
 

@@ -1,0 +1,27 @@
+---
+- hosts: stat
+  become: yes
+
+  tasks:
+  - name: Install common packages
+    yum:
+      name:
+        - mc
+        - net-tools
+        - git
+        - zip
+        - unzip
+        - wget
+      state: present
+
+  roles:
+    - role: '/home/lnxcfg/roles/iptables'
+    - role: '/home/lnxcfg/roles/repo'
+    - role: '/home/lnxcfg/roles/docker'
+    - role: '/home/lnxcfg/roles/stat'
+
+  vars:
+    iptables_open_ports:
+      - 3000
+      - 9090
+

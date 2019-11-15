@@ -1,0 +1,7 @@
+# roles/iptables/tasks/4-save.yml
+---
+
+- name: Save rules
+  command: service iptables save warn=no
+  become: true
+  tags: iptables

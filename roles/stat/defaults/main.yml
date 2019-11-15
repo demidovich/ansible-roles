@@ -2,19 +2,27 @@
 ---
 
 stat_prometheus_version: "2.8.0"
-stat_grafana_version: "5.0.4"
 stat_alertmanager_version: "0.16.1"
 stat_node_exporter_version: "0.17.0"
 stat_alertmanager_telegram_bot_ip: "127.0.0.1"
 stat_alertmanager_telegram_bot_port: "80"
 stat_alertmanager_repeat_interval: "60s"
 
+# Grafana
+# <  5.1 uid:gid 104:107
+# >= 5.1 uid:gid 472:472
+stat_grafana_version: "5.0.4"
+stat_grafana_gid: "107"
+stat_grafana_uid: "104"
 stat_grafana_admin_password: "admin"
 stat_grafana_users_allow_signup: "false"
 stat_grafana_smtp_enabled: "false"
 # host:port
-stat_grafana_smtp_host:
-stat_grafana_smtp_user:
-stat_grafana_smtp_password:
-stat_grafana_smtp_from_address:
-stat_grafana_smtp_from_name:
+stat_grafana_smtp_host: "localhost"
+stat_grafana_smtp_user: "user"
+stat_grafana_smtp_password: "pass"
+stat_grafana_smtp_from_address: "admin@admin"
+stat_grafana_smtp_from_name: "admin"
+
+# Docker
+stat_docker_network: "stat-network"

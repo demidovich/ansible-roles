@@ -1,0 +1,80 @@
+# roles/stat/tasks/5-docker.yml
+---
+
+- name: Create a docker network
+  docker_network:
+    name: "{{ stat_docker_network | string }}"
+
+- name: Prometheus docker container
+  docker_container:
+    name: prometheus
+    image: prom/prometheus:v{{ stat_prometheus_version }}
+    volumes:
+      - /opt/stat/etc/prometheus:/etc/prometheus
+      - /opt/stat/var/prometheus/data:/prometheus
+    ports:
+      - "9090:9090"
+    state: started
+#    restart_policy: always
+    network_mode: "{{ stat_docker_network | string }}"
+    restart: yes
+  tags: stat
+
+- name: Node exporter container
+  docker_container:
+    name: node-exporter
+    image: prom/node-exporter:v{{ stat_node_exporter_version }}
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - --path.procfs=/host/proc
+      - --path.sysfs=/host/sys
+      - --collector.filesystem.ignored-mount-points
+      - ^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)
+    ports:
+      - "9100:9100"
+    state: started
+#    restart_policy: always
+    network_mode: "{{ stat_docker_network | string }}"
+    restart: yes
+  tags: stat
+
+- name: Grafana container
+  docker_container:
+    name: grafana
+    image: grafana/grafana:{{ stat_grafana_version }}
+    volumes:
+      - /opt/stat/etc/grafana/provisioning:/etc/grafana/provisioning:rw
+      - /opt/stat/var/grafana:/var/lib/grafana:rw
+      - /opt/stat/log/grafana:/var/log/grafana:rw
+#      - /opt/stat/etc/grafana/provisioning:/etc/grafana/provisioning:rw
+#      - /opt/stat/var/grafana/data:/var/lib/grafana:rw
+#    links:
+#      - "prometheus:prometheus"
+    ports:
+      - "3000:3000"
+    env:
+      GF_SECURITY_ADMIN_PASSWORD: "{{ stat_grafana_admin_password | string }}"
+      GF_USERS_ALLOW_SIGN_UP: "{{ stat_grafana_users_allow_signup | string }}"
+#      GF_SMTP_ENABLED: "{{ stat_grafana_smtp_enabled | string }}"
+#      GF_SMTP_HOST: "{{ stat_grafana_smtp_host | string }}"
+#      GF_SMTP_USER: "{{ stat_grafana_smtp_user | string }}"
+#      GF_SMTP_PASSWORD: "{{ stat_grafana_smtp_password | string }}"
+#      GF_SMTP_FROM_ADDRESS: "{{ stat_grafana_smtp_from_address | string }}"
+#      GF_SMTP_FROM_NAME: "{{ stat_grafana_smtp_from_name | string }}"
+    #pull: always
+    recreate: yes
+    state: started
+#    restart_policy: always
+    network_mode: "{{ stat_docker_network | string }}"
+    restart: yes
+  register: docker_container_output
+
+#- name: Show test output
+#  debug:
+#    msg: "{{ docker_container_output.ansible_facts.docker_container }}"
+
+
+

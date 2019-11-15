@@ -1,0 +1,77 @@
+# roles/stat/tasks/1-users.yml
+---
+
+- name: Create prometheus group
+  group:
+    name: nogroup
+    gid: 65534
+#    system: yes
+    state: present
+  tags: stat
+
+- name: Create prometheus user
+  user:
+    name: nobody
+    uid: 65534
+    group: nogroup
+    create_home: no
+    system: yes
+    state: present
+  tags: stat
+
+- name: Create grafana group
+  group:
+    name: grafana
+    gid: "{{ stat_grafana_gid }}"
+#    system: yes
+    state: present
+  tags: stat
+
+- name: Create grafana user
+  user:
+    name: grafana
+    uid: "{{ stat_grafana_uid }}"
+    group: grafana
+    create_home: no
+    system: yes
+    state: present
+  tags: stat
+
+# Common dirs
+
+- name: Check existing /opt/stat/etc
+  stat:
+    path: /opt/stat/etc
+  register: st
+
+- name: Creating /opt/stat/etc dir
+  file:
+    path: /opt/stat/etc
+    recurse: yes
+    state: directory
+  tags: stat
+
+- name: Check existing /opt/stat/var
+  stat:
+    path: /opt/stat/var
+  register: st
+
+- name: Creating /opt/stat/var dir
+  file:
+    path: /opt/stat/var
+    recurse: yes
+    state: directory
+  tags: stat
+
+- name: Check existing /opt/stat/log
+  stat:
+    path: /opt/stat/log
+  register: st
+
+- name: Creating /opt/stat/log dir
+  file:
+    path: /opt/stat/log
+    recurse: yes
+    state: directory
+  tags: stat
+

@@ -1,0 +1,60 @@
+# roles/iptables/tasks/2-init.yml
+---
+
+- name: Check iptables config exists
+  stat:
+    path: /etc/sysconfig/iptables
+  register: st
+
+- name: Start service
+  service:
+    name: iptables
+    state: started
+    enabled: yes
+  tags: iptables
+
+- name: Flush existing firewall rules
+  iptables:
+    flush: true
+  when: not st.stat.exists
+  tags: iptables
+
+- name: Firewall rule - allow all loopback traffic
+  iptables:
+    action: append
+    chain: INPUT
+    in_interface: lo
+    jump: ACCEPT
+  tags: iptables
+
+- name: Firewall rule - allow established connections
+  iptables:
+    action: append
+    chain: INPUT
+    ctstate: ESTABLISHED,RELATED
+    jump: ACCEPT
+  tags: iptables
+
+- name: Firewall rule - allow port ping traffic
+  iptables:
+    action: append
+    chain: INPUT
+    jump: ACCEPT
+    protocol: icmp
+  tags: iptables
+
+- name: Firewall rule - allow port 22/SSH traffic
+  iptables:
+    action: append
+    chain: INPUT
+    destination_port: "22"
+    jump: ACCEPT
+    protocol: tcp
+  tags: iptables
+
+- name: Firewall rule - drop any traffic without rule
+  iptables:
+    action: append
+    chain: INPUT
+    jump: DROP
+  tags: iptables

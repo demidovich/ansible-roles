@@ -27,7 +27,11 @@
 
 - name: Add pip docker package
   pip:
-    name: docker-py
+    name:
+      - docker-py
+      - requests
+      - urllib3
+      - pyOpenSSL
     state: present
   become: yes
 
