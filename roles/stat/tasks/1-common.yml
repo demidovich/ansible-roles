@@ -1,5 +1,7 @@
-# roles/stat/tasks/1-users.yml
+# roles/stat/tasks/1-common.yml
 ---
+
+# Users
 
 - name: Create prometheus group
   group:
@@ -75,3 +77,19 @@
     state: directory
   tags: stat
 
+# Scipts
+
+- name: Creating /opt/stat/bin dir
+  file:
+    path: /opt/stat/bin
+    recurse: yes
+    state: directory
+    mode: 0755
+  tags: stat
+
+- name: Copy scripts to /opt/stat/bin/
+  file:
+    src: files/bin/
+    dest: /opt/stat/bin/
+    mode: 0644
+  tags: stat

@@ -1,0 +1,4 @@
+#!/bin/bash
+
+docker exec -ti --user root grafana /bin/bash
+

@@ -1,17 +1,22 @@
 # roles/stat/tasks/5-docker.yml
 ---
 
+# Network
+
 - name: Create a docker network
   docker_network:
     name: "{{ stat_docker_network | string }}"
 
+# Prometheus
+
 - name: Prometheus docker container
   docker_container:
     name: prometheus
-    image: prom/prometheus:v{{ stat_prometheus_version }}
+    #image: prom/prometheus:v{{ stat_prometheus_version }}
+    image: linuxtips/prometheus_alpine
     volumes:
-      - /opt/stat/etc/prometheus:/etc/prometheus
-      - /opt/stat/var/prometheus/data:/prometheus
+      - "/opt/stat/etc/prometheus:/etc/prometheus"
+      - "/opt/stat/var/prometheus/data:/prometheus:rw"
     ports:
       - "9090:9090"
     state: started
@@ -19,6 +24,13 @@
     network_mode: "{{ stat_docker_network | string }}"
     restart: yes
   tags: stat
+
+- name: Add ca-certificates
+  shell: |
+    docker exec -t --user root prometheus sh -c "apk upgrade && apk update && apk add ca-certificates && update-ca-certificates"
+  tags: stat
+
+# Node exporter
 
 - name: Node exporter container
   docker_container:
@@ -40,6 +52,8 @@
     network_mode: "{{ stat_docker_network | string }}"
     restart: yes
   tags: stat
+
+# Grafana
 
 - name: Grafana container
   docker_container:
@@ -75,6 +89,3 @@
 #- name: Show test output
 #  debug:
 #    msg: "{{ docker_container_output.ansible_facts.docker_container }}"
-
-
-

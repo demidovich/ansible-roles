@@ -1,7 +1,7 @@
 # roles/stat/tasks/main.yml
 ---
 
-- include_tasks: 1-users.yml
+- include_tasks: 1-common.yml
 - include_tasks: 2-prometheus-files.yml
 - include_tasks: 3-alertmanager-files.yml
 - include_tasks: 4-grafana-files.yml

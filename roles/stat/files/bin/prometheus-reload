@@ -1,0 +1,3 @@
+#!/bin/bash
+
+curl -s -XPOST prometheus:9090/-/reload

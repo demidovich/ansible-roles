@@ -1,12 +1,26 @@
-
 global:
-  scrape_interval:     15s
+  scrape_interval: 15s
+  scrape_timeout: 10s
   evaluation_interval: 15s
 
 scrape_configs:
-  - job_name: "node"
-    scrape_interval: "15s"
-    file_sd_configs:
-      - files:
-        - '/opt/stat/etc/prometheus/node.enabled/*.json'
-#        - '/var/lib/prometheus/discovery/node/*.json'
+
+- job_name: local
+  scrape_interval: 15s
+  scrape_timeout: 10s
+  metrics_path: /metrics
+  scheme: http
+  static_configs:
+    - targets: ['node-exporter:9100']
+      labels:
+        instance: "LOCALHOST"
+
+- job_name: node
+  scrape_interval: 15s
+  scrape_timeout: 10s
+  metrics_path: /metrics
+  scheme: https
+  file_sd_configs:
+  - files:
+    - /etc/prometheus/nodes/*.json
+    refresh_interval: 5m

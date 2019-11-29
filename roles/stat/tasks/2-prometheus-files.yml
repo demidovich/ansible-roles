@@ -3,47 +3,31 @@
 
 # Configs
 
-- name: "Creating /opt/stat/etc/prometheus/node.enabled"
+- name: "Creating /opt/stat/etc/prometheus/nodes"
   file:
     recurse: yes
-    path: /opt/stat/etc/prometheus/node.enabled
+    path: /opt/stat/etc/prometheus/nodes
     owner: nobody
     group: nogroup
     state: directory
   tags: stat
 
-- name: Creating /opt/stat/etc/prometheus/node.available
-  file:
-    recurse: yes
-    path: /opt/stat/etc/prometheus/node.available
-    owner: nobody
-    group: nogroup
-    state: directory
-  tags: stat
+- name: Check existing /opt/stat/etc/prometheus/prometheus.yml
+  stat:
+    path: /opt/stat/etc/prometheus/prometheus.yml
+  register: st
 
 - name: Creating /opt/stat/etc/prometheus/prometheus.yml
   copy:
     src: "{{ role_path }}/files/prometheus/prometheus.yml"
     dest: /opt/stat/etc/prometheus/prometheus.yml
-    owner: nobody
-    group: nogroup
-    mode: 0644
+  when: not st.stat.exists
   tags: stat
 
-- name: Creating /opt/stat/etc/prometheus/node.available/localhost.json
+- name: Creating /opt/stat/etc/prometheus/nodes/host.json.example
   copy:
-    src: "{{ role_path }}/files/prometheus/node.available/localhost.json"
-    dest: /opt/stat/etc/prometheus/node.available/localhost.json
-    owner: nobody
-    group: nogroup
-    mode: 0644
-  tags: stat
-
-- name: Creating /opt/stat/etc/prometheus/node.available/localhost.json
-  file:
-    src: /opt/stat/etc/prometheus/node.available/localhost.json
-    dest: /opt/stat/etc/prometheus/node.enabled/localhost.json
-    state: link
+    src: "files/prometheus/nodes/host.json.example"
+    dest: /opt/stat/etc/prometheus/nodes/host.json.example
   tags: stat
 
 # Data

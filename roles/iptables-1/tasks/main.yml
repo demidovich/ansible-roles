@@ -1,7 +1,0 @@
-# roles/iptables/main.yml
----
-
-- include_tasks: 1-install.yml
-- include_tasks: 2-base-rules.yml
-- include_tasks: 3-extra-rules.yml
-- include_tasks: 4-enable-service.yml
