@@ -1,6 +1,15 @@
 # roles/stat/tasks/1-common.yml
 ---
 
+# Packages
+
+- name: Install ssmtp
+  yum:
+    name: ssmtp
+    state: present
+    update_cache: yes
+  tags: stat
+
 # Users
 
 - name: Create prometheus group
