@@ -60,7 +60,7 @@
     name: grafana
     image: grafana/grafana:{{ stat_grafana_version }}
     volumes:
-      - /opt/stat/etc/grafana/provisioning:/etc/grafana/provisioning:rw
+      - /opt/stat/etc/grafana:/etc/grafana:rw
       - /opt/stat/var/grafana:/var/lib/grafana:rw
       - /opt/stat/log/grafana:/var/log/grafana:rw
 #      - /opt/stat/etc/grafana/provisioning:/etc/grafana/provisioning:rw

@@ -1,6 +1,51 @@
 # roles/stat/tasks/4-grafana-files.yml
 ---
 
+# grafana dir
+
+- name: Creating /opt/stat/etc/grafana dir
+  file:
+    path: /opt/stat/etc/grafana
+    recurse: yes
+    owner: grafana
+    group: grafana
+    state: directory
+  tags: stat
+
+# grafana.ini
+
+- name: Check existing /opt/stat/etc/grafana/grafana.ini
+  stat:
+    path: /opt/stat/etc/grafana/grafana.ini
+  register: st
+
+- name: Creating /opt/stat/etc/grafana/grafana.ini
+  copy:
+    src: "{{ role_path }}/files/grafana/grafana.ini"
+    dest: /opt/stat/etc/grafana/grafana.ini
+    owner: grafana
+    group: grafana
+    mode: 0644
+  when: not st.stat.exists
+  tags: stat
+
+# ldap.toml
+
+- name: Check existing /opt/stat/etc/grafana/ldap.toml
+  stat:
+    path: /opt/stat/etc/grafana/ldap.toml
+  register: st
+
+- name: Creating /opt/stat/etc/grafana/ldap.toml
+  copy:
+    src: "{{ role_path }}/files/grafana/ldap.toml"
+    dest: /opt/stat/etc/grafana/ldap.toml
+    owner: grafana
+    group: grafana
+    mode: 0644
+  when: not st.stat.exists
+  tags: stat
+
 # datasources
 
 - name: Creating /opt/stat/etc/grafana/provisioning/datasources dir
